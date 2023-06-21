@@ -13,6 +13,7 @@ import matplotlib.cbook as cbook
 warnings.filterwarnings('ignore', category=cbook.mplDeprecation)
 import numpy as np
 import pandas as pd
+from mycolorpy import colorlist as mcp
 
 import analyze
 import constants
@@ -33,7 +34,7 @@ if __name__ == '__main__':
 	df_common = analyze.get_subset(df, 'category', 'common')
 	df_rare = analyze.get_subset(df, 'category', 'rare')
 
-	# Adverb surprisal vs. Adverb RT (grouped by category)
+	# Adverb surprisal vs. Adverb RT (by category)
 	fig_path = os.path.join(FIGURES_DIR, 'surprisal_vs_adv_RT.png')
 	plt.scatter(df_common['surprisal'], df_common['adv_RT'], color='blueviolet', label='Common')
 	plt.scatter(df_rare['surprisal'], df_rare['adv_RT'], color='gold', label='Rare')
@@ -46,7 +47,20 @@ if __name__ == '__main__':
 	plt.savefig(fig_path)
 	plt.clf()
 
-	# Adverb surprisal vs. Adverb RT (common only)
+	# Adverb surprisal vs. Adverb RT (by category)
+	fig_path = os.path.join(FIGURES_DIR, 'surprisal_vs_adv_RT.png')
+	plt.scatter(df_common['surprisal'], df_common['adv_RT'], color='blueviolet', label='Common')
+	plt.scatter(df_rare['surprisal'], df_rare['adv_RT'], color='gold', label='Rare')
+	plt.title('Adverb Surprisal vs. Adverb RT')
+	plt.xlabel('Surprisal (bits)')
+	plt.ylabel('Reading Time (sec)')
+	plt.xlim(10, 65, 5)
+	plt.ylim(0, ceil(np.max(df['adv_RT']))+1)
+	plt.legend(loc='best')
+	plt.savefig(fig_path)
+	plt.clf()
+
+	# Adverb surprisal vs. Adverb RT (Common)
 	fig_path = os.path.join(FIGURES_DIR, 'surprisal_vs_adv_RT_common.png')
 	df_common_sorted = df_common.sort_values(by=['surprisal'])
 	x = df_common_sorted['surprisal']
@@ -65,7 +79,7 @@ if __name__ == '__main__':
 	plt.savefig(fig_path)
 	plt.clf()
 
-	# Adverb surprisal vs. Adverb RT (rare only)
+	# Adverb surprisal vs. Adverb RT (Rare)
 	fig_path = os.path.join(FIGURES_DIR, 'surprisal_vs_adv_RT_rare.png')
 	df_rare_sorted = df_rare.sort_values(by=['surprisal'])
 	x = df_rare_sorted['surprisal']
@@ -84,7 +98,7 @@ if __name__ == '__main__':
 	plt.savefig(fig_path)
 	plt.clf()
 
-	# Adverb surprisal vs. Sentence RT (grouped by category)
+	# Adverb surprisal vs. Sentence RT
 	fig_path = os.path.join(FIGURES_DIR, 'surprisal_vs_sent_RT.png')
 	plt.scatter(df_common['surprisal'], df_common['sentence_RT'], color='blueviolet', label='Common')
 	plt.scatter(df_rare['surprisal'], df_rare['sentence_RT'], color='gold', label='Rare')
@@ -97,7 +111,7 @@ if __name__ == '__main__':
 	plt.savefig(fig_path)
 	plt.clf()
 
-	# Mean Adverb RT by Adverb Length (grouped by category)
+	# Mean Adverb RT by Adverb Length (characters)
 	df_rt_word_len_common = analyze.calc_rt_by_category(df_common, 'word_length')
 	df_rt_word_len_rare = analyze.calc_rt_by_category(df_rare, 'word_length')
 	x_len_common = df_rt_word_len_common['word_length']
@@ -121,8 +135,9 @@ if __name__ == '__main__':
 	plt.ylabel('Reading Time (sec)')
 	plt.savefig(fig_path)
 	plt.clf()
+	print(f'Mean adverb RT for common')
 
-	# Mean Adverb RT by Participant (grouped by category)
+	# Mean Adverb RT by Participant
 	df_rt_id_common = analyze.calc_rt_by_category(df_common, 'id')
 	df_rt_id_rare = analyze.calc_rt_by_category(df_rare, 'id')
 	y_adv_common = df_rt_id_common['adv_RT_mean']
@@ -144,7 +159,7 @@ if __name__ == '__main__':
 	plt.savefig(fig_path)
 	plt.clf()
 
-	# Mean Adverb RT by Adverb (common only)
+	# Mean Adverb RT by Adverb (Common)
 	adv_common = [adv_tuple[0] for adv_tuple in constants.ADV_TUPLE]
 	df_rt_common = analyze.calc_rt_by_category(df_common, 'adv').sort_values(by=['adv'], key=lambda x: adv_common)
 	y_adv = df_rt_common['adv_RT_mean']
@@ -162,7 +177,7 @@ if __name__ == '__main__':
 	plt.clf()
 	print(f'Mean adverb RT for common: {y_adv_mean}')
 
-	# Mean Adverb RT by Adverb (rare only)
+	# Mean Adverb RT by Adverb (Rare)
 	adv_rare = [adv_tuple[1] for adv_tuple in constants.ADV_TUPLE]
 	df_rt_rare = analyze.calc_rt_by_category(df_rare, 'adv').sort_values(by=['adv'], key=lambda x: adv_rare)
 	y_adv = df_rt_rare['adv_RT_mean']
@@ -180,7 +195,7 @@ if __name__ == '__main__':
 	plt.clf()
 	print(f'Mean adverb RT for rare: {y_adv_mean}')
 
-	# Mean Sentence RT by Adverb (common only)
+	# Mean Sentence RT by Adverb (Common)
 	adv_common = [adv_tuple[0] for adv_tuple in constants.ADV_TUPLE]
 	df_rt_common = analyze.calc_rt_by_category(df_common, 'adv').sort_values(by=['adv'], key=lambda x: adv_common)
 	y_adv = df_rt_common['sent_RT_mean']
@@ -198,7 +213,7 @@ if __name__ == '__main__':
 	plt.clf()
 	print(f'Mean sentence RT for common: {y_adv_mean}')
 
-	# Mean Sentence RT by Adverb (rare only)
+	# Mean Sentence RT by Adverb (Rare)
 	adv_rare = [adv_tuple[1] for adv_tuple in constants.ADV_TUPLE]
 	df_rt_rare = analyze.calc_rt_by_category(df_rare, 'adv').sort_values(by=['adv'], key=lambda x: adv_rare)
 	y_adv = df_rt_rare['sent_RT_mean']

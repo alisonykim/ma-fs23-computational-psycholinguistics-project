@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 # analyze.py
 
-"""
-TODO
-"""
+"""Analyze data from reading experiments."""
 
 from typing import Dict, List, Union
 
@@ -39,11 +37,11 @@ def calc_rt_by_category(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
 	return pd.DataFrame(subset_dict, index=columns, dtype=object).transpose()
 
 
-def assemble(idx: List[int], value_dict: Dict[int, Union[float, int, str]]) -> List[Union[float, int, str]]:
-	assembled = list()
-	for i in idx:
-		try:
-			assembled.append(value_dict[i])
-		except KeyError:
-			assembled.append(0)
+def assemble(
+	idx: List[int],
+	value_dict: Dict[int, Union[float, int, str]],
+	default_val: Union[float, int, str]=0
+) -> List[Union[float, int, str]]:
+	"""Collect values corresponding to a specific index, given a list of indices."""
+	assembled = [value_dict.get(i, default_val) for i in idx]
 	return assembled
